@@ -42,7 +42,6 @@ def get_episode_details(season_details):
         episodes = season["Episodes"]
         for episode in episodes:
             season_wise_episodes.append((episode["Title"], episode["Episode"], episode["imdbRating"]))
-        season_wise_episodes = sorted(season_wise_episodes, key=lambda x: x[1])
         episode_details.append(season_wise_episodes)
     return episode_details
 
@@ -77,7 +76,7 @@ FONT = ImageFont.truetype("OpenSans-SemiBold.ttf", 15)
 TITLEFONT = ImageFont.truetype("OpenSans-Light.ttf", 35)
 
 # spacing denotes the space between ratings and stat
-STAT_SPACING = 10
+STAT_SPACING = 30
 # padding denotes the left and bottom padding of stat
 STAT_PADDING = 30
 # denotes the spacing between title and overall rating
@@ -220,15 +219,15 @@ def generate_image(show, episode_details, filename):
     draw_row(draw, (PADDING, PADDING), seasons_header)
     current_top = PADDING + BOX_HEIGHT
 
-    sc = 1
     for i in range(max_ep_in_a_season):
-        ratings = [sc]
+        ratings = [i + 1]
         for season in episode_details:
             if len(season) > i:
                 ratings.append(season[i][2])
+            else:
+                ratings.append(None)
         draw_row(draw, (PADDING, current_top), ratings, True)
         current_top = current_top + BOX_HEIGHT
-        sc += 1
 
     # write show name
     name_width, name_height = calculate_text_size(show["Title"], TITLEFONT)
