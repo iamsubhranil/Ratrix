@@ -130,19 +130,17 @@ def draw_row(im, start, text, grades=False):
         i += 1
 
 def calculate_text_size(text, fnt):
-    im = ImageDraw.Draw(Image.new('RGB', (1000, 1000)))
-    rating_size = im.textsize(text, font=fnt)
-    return rating_size
+    return fnt.getsize(text)
 
 def calculate_stat_size(name, without_overall=False):
     size = calculate_text_size(name, TITLEFONT)
     name_rate_spacing = NAME_RATING_SPACING
     if without_overall:
-        ratings = calculate_text_size("10.0", FONT)
-    else:
         ratings = (0,0)
         name_rate_spacing = 0
-    return (size[0] + ratings[0] + name_rate_spacing + (STAT_PADDING * 2), size[1] + STAT_PADDING + STAT_SPACING)
+    else:
+        ratings = calculate_text_size("10.0", FONT)
+    return (size[0] + ratings[0] + name_rate_spacing + (STAT_PADDING * 2), size[1] + STAT_SPACING)
 
 def calculate_ratings_size(name, num_seasons, max_ep_in_a_season):
     global BOX_HEIGHT, BOX_WIDTH, PADDING
@@ -152,9 +150,10 @@ def calculate_ratings_size(name, num_seasons, max_ep_in_a_season):
     width = min_width + (PADDING * 2)
     stat_width, stat_height = calculate_stat_size(name)
     if width < stat_width:
+        PADDING += int((stat_width - width) / 2)
         width = stat_width
-        PADDING = (width - stat_width) / 2
-    height += stat_height + STAT_SPACING
+        height = min_height + (PADDING * 2)
+    height += stat_height
     return width, height
 
 def calculate_size(posterim, name, num_seasons, max_ep_in_a_season):
