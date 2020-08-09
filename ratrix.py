@@ -203,7 +203,7 @@ def generate_image(show, episode_details, filename):
     draw = ImageDraw.Draw(im)
     # draw the row column headers
     column_header_size = calculate_text_size("Seasons", FONT)
-    draw.text((((width - column_header_size[0]) / 2) + PADDING, PADDING / 2), "Seasons", fill=COLORS[1], font=FONT)
+    draw.text((((width - column_header_size[0]) / 2) + (BOX_WIDTH / 2), PADDING / 2), "Seasons", fill=COLORS[1], font=FONT)
     row_header_size = calculate_text_size("Episodes", FONT)
     row_header_img = Image.new('RGB', (row_header_size[0], row_header_size[0]), COLORS[0])
     row_header_draw = ImageDraw.Draw(row_header_img)
