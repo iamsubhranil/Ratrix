@@ -10,7 +10,7 @@ $ pip install pillow
 
 This program interacts with the OMDb API for the statistics, and contains a default 
 API key inside `.apikey` file. OMDb has a limit of 1000 requests per day for free API 
-users. So in case that limit is reached, create a new key for yourself at omdb.com and 
+users. So in case that limit is reached, create a new key for yourself at omdbapi.com and 
 store it inside the `.apikey` file, and then continue using Ratrix as usual.
 
 # Usage
