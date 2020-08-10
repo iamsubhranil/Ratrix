@@ -1,10 +1,20 @@
 import requests # external import
 import urllib
 import sys
+import os
 
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-API_KEY = "d5ce1034"
+API_KEY = None
+
+def get_api_key():
+    if os.path.isfile(".apikey") == False:
+        print("Error: Unable to obtain the API key!")
+        print("Obtain an API key omdb.com and save in .apikey inside present folder!")
+        sys.exit(0)
+    global API_KEY
+    with open(".apikey", "r") as f:
+        API_KEY = f.read().strip()
 
 def build_request(**kwargs):
     global API_KEY
@@ -266,6 +276,7 @@ def main():
     if len(sys.argv) < 3:
         print("Usage: %s <show_to_search> <output_file>" % sys.argv[0])
         sys.exit(1)
+    get_api_key()
     print("Searching for '%s'.." % sys.argv[1])
     show = search(sys.argv[1])
     if show != None:
