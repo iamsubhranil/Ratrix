@@ -203,7 +203,7 @@ def generate_image(show, episode_details, filename):
     draw = ImageDraw.Draw(im)
     # draw the row column headers
     column_header_size = calculate_text_size("Seasons", FONT)
-    draw.text((((width - column_header_size[0]) / 2) + (BOX_WIDTH / 2), PADDING / 2), "Seasons", fill=COLORS[1], font=FONT)
+    draw.text((((width - column_header_size[0]) / 2) + (BOX_WIDTH / 2), PADDING - column_header_size[1]), "Seasons", fill=COLORS[1], font=FONT)
     row_header_size = calculate_text_size("Episodes", FONT)
     row_header_img = Image.new('RGB', (row_header_size[0], row_header_size[0]), COLORS[0])
     row_header_draw = ImageDraw.Draw(row_header_img)
@@ -212,7 +212,7 @@ def generate_image(show, episode_details, filename):
     row_header_img = row_header_img.rotate(270)
     row_header_img = row_header_img.crop((row_header_pos_left, 0, row_header_pos_left + row_header_size[1], row_header_size[0]))
     row_header_img = row_header_img.rotate(180)
-    im.paste(row_header_img, (int((PADDING - row_header_size[1]) / 2), int((height - row_header_size[0])/ 2)))
+    im.paste(row_header_img, ((PADDING - row_header_size[1]), int((height - row_header_size[0])/ 2)))
     # draw the seasons header
     seasons_header = [i for i in range(1, len(episode_details) + 1)]
     seasons_header.insert(0, None)
