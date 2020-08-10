@@ -16,20 +16,27 @@ def build_request(**kwargs):
 def search(name):
     global API_KEY
     r = build_request(t=name)
-    if r.status_code == 404 or r.json()["Response"] == False:
+    if r.status_code == 404 or r.json()["Response"] == "False":
         return None
     return r.json()
 
 def get_season_details(response):
     num_seasons = int(response["totalSeasons"])
+    print("Total seasons: %d.." % num_seasons)
     season_details = []
+    showname = response["Title"]
+    print("Gathering information about season 000..", end='')
+    sys.stdout.flush()
     for season in range(1, num_seasons + 1):
-        res = build_request(t=response["Title"], Season=season)
+        print("\b\b\b\b\b{:3}..".format(season), end='')
+        sys.stdout.flush()
+        res = build_request(t=showname, Season=season)
         if res.status_code == 404:
             res = None
         else:
             res = res.json()
         season_details.append(res)
+    print(" Done")
     return season_details
 
 def get_episode_details(season_details):
@@ -193,15 +200,20 @@ def generate_image(show, episode_details, filename):
     num_seasons = len(episode_details)
     max_ep_in_a_season = len(max(episode_details, key=lambda x: len(x)))
     # dynamically adjust the poster
+    print("Downloading poster..")
     poster = Image.open(urllib.request.urlopen(show["Poster"]))
+    print("Adjusting the image dimensions..")
     width, height = calculate_size(poster, show["Title"], num_seasons, max_ep_in_a_season)
     # resize and blur the poster
+    print("Resizing and blurring the poster..")
     poster = poster.resize((width, height))
     poster = poster.filter(ImageFilter.GaussianBlur(radius=5))
     # create the image
+    print("Creating matrix image..")
     im = Image.new('RGB', (width, height), COLORS[0])
     draw = ImageDraw.Draw(im)
     # draw the row column headers
+    print("Drawing seasons and episode headers..")
     column_header_size = calculate_text_size("Seasons", FONT)
     draw.text((((width - column_header_size[0]) / 2) + (BOX_WIDTH / 2), PADDING - column_header_size[1]), "Seasons", fill=COLORS[1], font=FONT)
     row_header_size = calculate_text_size("Episodes", FONT)
@@ -219,6 +231,7 @@ def generate_image(show, episode_details, filename):
     draw_row(draw, (PADDING, PADDING), seasons_header)
     current_top = PADDING + BOX_HEIGHT
 
+    print("Drawing ratings..")
     for i in range(max_ep_in_a_season):
         ratings = [i + 1]
         for season in episode_details:
@@ -229,6 +242,7 @@ def generate_image(show, episode_details, filename):
         draw_row(draw, (PADDING, current_top), ratings, True)
         current_top = current_top + BOX_HEIGHT
 
+    print("Drawing show name and overall rating..")
     # write show name
     name_width, name_height = calculate_text_size(show["Title"], TITLEFONT)
     rating_width, rating_height = calculate_text_size(show["imdbRating"], FONT)
@@ -242,20 +256,30 @@ def generate_image(show, episode_details, filename):
     draw.rectangle((orate_left, orate_top, orate_right, orate_bottom), fill=COLORS[calculate_index_by_grade(float(orate))])
     draw.text((orate_right + 5, orate_top), show["imdbRating"], fill=COLORS[1], font=FONT)
 
+    print("Blending with the poster..")
     finalimage = Image.blend(poster, im, OPACITY)
+    print("Saving the resulting image..")
     finalimage.save(filename)
+    print("Completed successfully!")
 
 def main():
     if len(sys.argv) < 3:
         print("Usage: %s <show_to_search> <output_file>" % sys.argv[0])
         sys.exit(1)
+    print("Searching for '%s'.." % sys.argv[1])
     show = search(sys.argv[1])
     if show != None:
-        seasons = get_season_details(show)
-        episodes = get_episode_details(seasons)
-        generate_image(show, episodes, sys.argv[2])
+        try:
+            print("Gathering information about '%s'.." % show["Title"])
+            seasons = get_season_details(show)
+            episodes = get_episode_details(seasons)
+            generate_image(show, episodes, sys.argv[2])
+        except KeyError as e:
+            print("Error: Data does not conform to the expected format!")
+            print("The following value could not be found:", e)
+            print("Unable to generate the matrix!")
     else:
-        print("Error: Unable to get details about '%s'" % sys.argv[1])
+        print("Error: Unable to get details about '%s'!" % sys.argv[1])
 
 if __name__ == "__main__":
     main()
