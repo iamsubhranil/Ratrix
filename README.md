@@ -17,3 +17,10 @@ store it inside the `.apikey` file, and then continue using Ratrix as usual.
 ```
 $ ratrix "This Is Us" this_is_us.png
 ```
+
+# Screenshots
+![BoJack Horseman](./screenshots/bojack.png)
+![Modern Family](./screenshots/mf.png)
+![Peaky Blinders](./screenshots/pb.png)
+![The Simpsons](./screenshots/simpsons.png)
+![The Big Bang Theory](./screenshots/tbbt.png)
