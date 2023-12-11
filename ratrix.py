@@ -164,7 +164,7 @@ def draw_row(im, start, text, grades=False):
 
 def calculate_text_size(text, fnt):
     left, top, right, bottom = fnt.getbbox(text)
-    return right - left, bottom - top + (5 * SCALE)
+    return right - left, bottom - top + (6 * SCALE)
 
 
 def calculate_stat_size(name, without_overall=False):
