@@ -152,7 +152,7 @@ def draw_row(im, start, text, grades=False):
         im.rectangle(rect_dim, fill=rect_color, outline=COLORS[0])
         # center the text
         cell = str(cell)
-        textsize = im.textsize(cell, font=FONT)
+        textsize = calculate_text_size(cell, FONT)
         pad_left = (BOX_WIDTH - textsize[0] + MARKER_WIDTH) / 2
         pad_top = (BOX_HEIGHT - textsize[1]) / 2
         im.text((left + pad_left, top + pad_top),
@@ -161,7 +161,8 @@ def draw_row(im, start, text, grades=False):
 
 
 def calculate_text_size(text, fnt):
-    return fnt.getsize(text)
+    left, top, right, bottom = fnt.getbbox(text)
+    return right - left, bottom - top + 10
 
 
 def calculate_stat_size(name, without_overall=False):
