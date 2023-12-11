@@ -87,27 +87,29 @@ ELEMENTARY = ["#101010", "#f2f2f2", "#101010",
 OPACITY = 0.85
 COLORS = [hex_to_rgb(i) for i in ELEMENTARY]
 
+SCALE = 10
+
 # dimension of each box
-BOX_HEIGHT = 50
-BOX_WIDTH = 50
+BOX_HEIGHT = 50 * SCALE
+BOX_WIDTH = 50 * SCALE
 
 # dimension of each marker inside the box
-MARKER_WIDTH = 3
-MARKER_PADDING_HEIGHT = 10
+MARKER_WIDTH = 3 * SCALE
+MARKER_PADDING_HEIGHT = 10 * SCALE
 
 # padding in all sides of the image
-PADDING = 30
+PADDING = 30 * SCALE
 
 # font
-FONT = ImageFont.truetype("OpenSans-SemiBold.ttf", 15)
-TITLEFONT = ImageFont.truetype("OpenSans-Light.ttf", 35)
+FONT = ImageFont.truetype("OpenSans-SemiBold.ttf", 15 * SCALE)
+TITLEFONT = ImageFont.truetype("OpenSans-Light.ttf", 35 * SCALE)
 
 # spacing denotes the space between ratings and stat
-STAT_SPACING = 30
+STAT_SPACING = 30 * SCALE
 # padding denotes the left and bottom padding of stat
-STAT_PADDING = 30
+STAT_PADDING = 30 * SCALE
 # denotes the spacing between title and overall rating
-NAME_RATING_SPACING = 10
+NAME_RATING_SPACING = 10 * SCALE
 
 
 def calculate_index_by_grade(grade):
@@ -162,7 +164,7 @@ def draw_row(im, start, text, grades=False):
 
 def calculate_text_size(text, fnt):
     left, top, right, bottom = fnt.getbbox(text)
-    return right - left, bottom - top + 10
+    return right - left, bottom - top + (5 * SCALE)
 
 
 def calculate_stat_size(name, without_overall=False):
@@ -242,7 +244,7 @@ def generate_image(show, episode_details, filename):
     # resize and blur the poster
     print("Resizing and blurring the poster..")
     poster = poster.resize((width, height))
-    poster = poster.filter(ImageFilter.GaussianBlur(radius=5))
+    poster = poster.filter(ImageFilter.GaussianBlur(radius=5 * SCALE))
     # create the image
     print("Creating matrix image..")
     im = Image.new('RGB', (width, height), COLORS[0])
@@ -295,7 +297,7 @@ def generate_image(show, episode_details, filename):
     orate = show["imdbRating"]
     draw.rectangle((orate_left, orate_top, orate_right, orate_bottom),
                    fill=COLORS[calculate_index_by_grade(float(orate))])
-    draw.text((orate_right + 5, orate_top),
+    draw.text((orate_right + (5 * SCALE), orate_top),
               show["imdbRating"], fill=COLORS[1], font=FONT)
 
     print("Blending with the poster..")
